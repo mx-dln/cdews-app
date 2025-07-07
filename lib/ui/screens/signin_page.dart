@@ -28,42 +28,51 @@ class _SignInState extends State<SignIn> {
   }
 
   loginPressed(String nameController, String passwordController) async {
-    final url = Uri.parse('https://c-dews.synqbox.com/api/login');
-    final response = await http.post(url,
-        body: {'username': nameController, 'password': passwordController});
-    Map responseMap = jsonDecode(response.body);
-    print(responseMap);
+  final url = Uri.parse('https://c-dews.synqbox.com/api/login');
+  final response = await http.post(url, body: {
+    'username': nameController,
+    'password': passwordController,
+  });
+  Map responseMap = jsonDecode(response.body);
+  print(responseMap);
 
-    if (responseMap.values.first == 'success') {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('scopeValue', '${responseMap['data']['scope']}');
-      prefs.setString(
-          'permissionValue', '${responseMap['data']['permission']}');
-      prefs.setString('name', '${responseMap['data']['name']}');
-      Navigator.pushReplacement(
-          context,
-          PageTransition(
-              child: const RootPage(), type: PageTransitionType.bottomToTop));
-    } else {
-      return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('${responseMap['status']}'),
-            content: Text('${responseMap['message']}'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
+  if (responseMap.values.first == 'success') {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('scopeValue', '${responseMap['data']['scope']}');
+    prefs.setString('permissionValue', '${responseMap['data']['permission']}');
+    prefs.setString('name', '${responseMap['data']['name']}');
+
+    // ✅ Add this line to mark user as logged in
+    prefs.setBool('isLoggedIn', true);
+
+    Navigator.pushReplacement(
+      context,
+      PageTransition(
+        child: const RootPage(),
+        type: PageTransitionType.bottomToTop,
+      ),
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('${responseMap['status']}'),
+          content: Text('${responseMap['message']}'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

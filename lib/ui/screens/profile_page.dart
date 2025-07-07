@@ -29,84 +29,86 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        height: size.height,
-        width: size.width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Constants.primaryColor.withOpacity(.5),
-                  width: 5.0,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          height: size.height,
+          width: size.width,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Constants.primaryColor.withOpacity(.5),
+                    width: 5.0,
+                  ),
+                ),
+                child: const CircleAvatar(
+                  radius: 60,
+                  backgroundImage: ExactAssetImage('assets/images/avatar.jpeg'),
                 ),
               ),
-              child: const CircleAvatar(
-                radius: 60,
-                backgroundImage: ExactAssetImage('assets/images/avatar.jpeg'),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              width: size.width * .4,
-              child: Row(
-                children: [
-                  Text(
-                    myData,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Constants.blackColor,
-                      fontSize: 15,
-                    ),
-                  ),
-                  // SizedBox(
-                  //     height: 24,
-                  //     child: Image.asset("assets/images/verified.png")),
-                ],
-              ),
-            ),
-            // Text(
-            //   'johndoe@gmail.com',
-            //   style: TextStyle(
-            //     color: Constants.blackColor.withOpacity(.3),
-            //   ),
-            // ),
-            // const SizedBox(
-            //   height: 30,
-            // ),
-            GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    PageTransition(
-                        child: const SignIn(),
-                        type: PageTransitionType.leftToRight));
-              },
-              child: SizedBox(
-                height: size.height * .6,
-                width: size.width,
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              const SizedBox(height: 10),
+              SizedBox(
+                width: size.width * .4,
+                child: Row(
                   children: [
-                    ProfileWidget(
-                      icon: Icons.logout,
-                      title: 'Log Out',
+                    Text(
+                      myData,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Constants.blackColor,
+                        fontSize: 15,
+                      ),
                     ),
+                    // SizedBox(
+                    //     height: 24,
+                    //     child: Image.asset("assets/images/verified.png")),
                   ],
                 ),
               ),
-            ),
-          ],
+              // Text(
+              //   'johndoe@gmail.com',
+              //   style: TextStyle(
+              //     color: Constants.blackColor.withOpacity(.3),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 30,
+              // ),
+              GestureDetector(
+                onTap: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs
+                      .clear(); // Or: await prefs.setBool('isLoggedIn', false);
+                  Navigator.pushReplacement(
+                    context,
+                    PageTransition(
+                      child: const SignIn(),
+                      type: PageTransitionType.leftToRight,
+                    ),
+                  );
+                },
+                child: SizedBox(
+                  height: size.height * .6,
+                  width: size.width,
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ProfileWidget(icon: Icons.logout, title: 'Log Out'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
